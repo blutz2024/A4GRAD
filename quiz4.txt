@@ -1,0 +1,34 @@
+Question: What year was West Virginia University founded?
+Option: 1859
+Option: 1867
+Option: 1872
+Option: 1881
+Answer: 1867
+
+Question: What are the official colors of West Virginia University?
+Option: Blue and gold
+Option: Red and white
+Option: Green and yellow
+Option: Purple and orange
+Answer: Blue and gold
+
+Question: What is the mascot of West Virginia University?
+Option: Mountaineer
+Option: Mountaineer Bear
+Option: Panther
+Option: Hawk
+Answer: Mountaineer
+
+Question: In which city is the main campus of West Virginia University located?
+Option: Charleston
+Option: Morgantown
+Option: Huntington
+Option: Wheeling
+Answer: Morgantown
+
+Question: What is the name of the football stadium at West Virginia University?
+Option: Mountaineer Field
+Option: Mountaineer Stadium
+Option: Milan Puskar Stadium
+Option: WVU Stadium
+Answer: Milan Puskar Stadium

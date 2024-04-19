@@ -1,0 +1,34 @@
+Question: In the game "The Legend of Zelda", what is the name of the main character?
+Option: Link
+Option: Zelda
+Option: Ganon
+Option: Epona
+Answer: Link
+
+Question: Which video game franchise features a plumber named Mario?
+Option: Sonic the Hedgehog
+Option: Final Fantasy
+Option: Call of Duty
+Option: Super Mario
+Answer: Super Mario
+
+Question: What is the best-selling video game of all time?
+Option: Minecraft
+Option: Grand Theft Auto V
+Option: Tetris
+Option: Wii Sports
+Answer: Minecraft
+
+Question: Which video game series features a character named Master Chief?
+Option: Halo
+Option: Gears of War
+Option: Call of Duty
+Option: Battlefield
+Answer: Halo
+
+Question: What is the name of the fictional continent in the game "The Elder Scrolls V: Skyrim"?
+Option: Middle-earth
+Option: Azeroth
+Option: Tamriel
+Option: Westeros
+Answer: Tamriel

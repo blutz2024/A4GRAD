@@ -1,0 +1,41 @@
+Question: Which country is home to the Eiffel Tower?
+Option: Italy
+Option: France
+Option: Spain
+Option: Germany
+Answer: France
+
+Question: Machu Picchu, an ancient Incan citadel, is located in which country?
+Option: Brazil
+Option: Peru
+Option: Mexico
+Option: Argentina
+Answer: Peru
+
+Question: What is the capital city of Japan?
+Option: Tokyo
+Option: Beijing
+Option: Seoul
+Option: Bangkok
+Answer: Tokyo
+
+Question: The Great Barrier Reef is located off the coast of which country?
+Option: Australia
+Option: Brazil
+Option: Indonesia
+Option: South Africa
+Answer: Australia
+
+Question: Which country is famous for its tulip fields and windmills?
+Option: Germany
+Option: France
+Option: Netherlands
+Option: Denmark
+Answer: Netherlands
+
+Question: Where are the Rocky Mountains located?
+Option: United States
+Option: Indonesia
+Option: Antarctica
+Option: Europe
+Answer: United States
