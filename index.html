@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <style>
+        /* Custom CSS styles */
+        body {
+            background: linear-gradient(135deg, #2980b9, #6abeff);
+            color: #000;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        form {
+            margin: 0 auto;
+            max-width: 1100px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h1>Test Your Knowledge!</h1>
+<form id="quizForm" method="POST" action="/">
+    <label for="name">Your Name:</label>
+    <input type="text" id="name" name="name" required style="padding: 5px; width: 30%; box-sizing: border-box;">
+    <br><br>
+    <label for="timer">Timer (seconds):</label>
+    <input type="number" id="timer" name="timer" min="1" required
+           style="padding: 5px; width: 30%; box-sizing: border-box;">
+    <br><br>
+    <label for="quiz">Select Quiz:</label>
+    <select id="quiz" name="quiz">
+        <option value=""></option>
+        <option value="quiz1">World</option>
+        <option value="quiz2">Presidents</option>
+        <option value="quiz3">Video Games</option>
+        <option value="quiz4">WVU</option>
+    </select>
+    <br><br>
+    <button type="button" id="startQuizButton">Start Quiz</button> <!-- Change type to "button" -->
+</form>
+{% if total_score is not none %}
+<h2>Total Score: {{ total_score }}%</h2>
+{% endif %}
+
+<div id="quizQuestions" class="hidden"></div>
+
+{% if timer_value is not none %}
+<div id="timerDisplay">{{ timer_value }}</div> <!-- Display the timer value -->
+{% endif %}
+
+<script>
+    var quizStarted = false; // Flag to track if quiz has started
+    var timerExpired = false; // Flag to track if timer has expired
+
+    document.getElementById("startQuizButton").addEventListener("click", function() {
+        var name = document.getElementById("name").value; // Get the value of the name field
+        var timer = document.getElementById("timer").value; // Get the value of the timer field
+
+        if (name.trim() === "") { // Check if the name field is empty
+            alert("Please enter your name to start the quiz."); // Show an alert message
+            return; // Exit the function if the name field is empty
+        }
+
+        if (timer.trim() === "") { // Check if the timer field is empty
+            alert("Please enter the timer value to start the quiz."); // Show an alert message
+            return; // Exit the function if the timer field is empty
+        }
+
+        var selectedQuiz = document.getElementById("quiz").value;
+        console.log(selectedQuiz); // Add this line to check the selected quiz
+
+        // Start the timer
+        startTimer(timer);
+
+        // Set quizStarted flag to true
+        quizStarted = true;
+
+        // Construct URL
+        var host = "http://127.0.0.1:5000"; // Your host URL
+        var url = host + "/quiz/" + selectedQuiz + "?timer_value=" + timer; // Append timer value as query parameter
+    // Navigate to URL
+    window.location.href = url;
+    });
+
+    function startTimer(duration) {
+    var timerDisplay = document.getElementById("timerDisplay");
+    var timer = duration, minutes, seconds;
+    var intervalId = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        // Update the timer display element with the current timer value
+        timerDisplay.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+            clearInterval(intervalId);
+            timerDisplay.textContent = "Time's up!";
+            timerExpired = true; // Set timerExpired flag to true
+            // You can add any additional actions here when the timer ends
+            // For example, disable quiz elements and prevent further submission
+            disableQuiz();
+        }
+    }, 1000);
+}
+
+
+    function disableQuiz() {
+        var quizForm = document.getElementById("quizForm");
+        var quizInputs = quizForm.querySelectorAll("input, select, button");
+        quizInputs.forEach(function(input) {
+            input.disabled = true;
+        });
+    }
+
+    // Add event listener to prevent quiz submission after timer expiration
+    window.addEventListener("beforeunload", function(event) {
+        if (quizStarted && timerExpired) {
+            event.returnValue = "Are you sure you want to leave the page? Your quiz time has expired.";
+        }
+    });
+</script>
+
+
+</body>
+</html>

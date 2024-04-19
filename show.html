@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Questions</title>
+    <style>
+        /* Custom CSS styles */
+        body {
+            background: linear-gradient(135deg, #2980b9, #6abeff);
+            color: #000;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .question {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .option {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .selected {
+            background-color: #3498db;
+            color: #fff;
+        }
+        #quizResult {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 24px; /* Adjust the font size of the total score */
+        }
+        #timerDisplay {
+        font-size: 32px; /* Adjust the font size of the timer countdown */
+        }
+        /* Style for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h1>Quiz Questions</h1>
+<div id="quizQuestions"></div>
+<button onclick="submitQuiz()" style="padding: 15px 30px; font-size: 16px;">Submit Quiz</button>
+
+<button onclick="returnToIndex()" style="padding: 15px 30px; font-size: 16px;">Return to Home</button>
+
+<!-- The modal -->
+<div id="quizResultModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="quizResult"></div>
+  </div>
+</div>
+
+{% if timer_value is not none %}
+<div id="timerDisplay">Time Left: {{ timer_value }} seconds</div> <!-- Display the timer countdown -->
+{% endif %}
+<script>
+    function returnToIndex() {
+            window.location.href = "{{ url_for('index') }}"; // Redirect to the index page
+        }
+
+    var questions = {{ questions | tojson }};
+    var userAnswers = Array(questions.length).fill(null);
+
+    function selectOption(questionIndex, optionIndex) {
+        var options = document.querySelectorAll('.question[data-index="' + questionIndex + '"] .option');
+        options.forEach(function(option, index) {
+            option.classList.remove('selected');
+            if (index === optionIndex) {
+                option.classList.add('selected');
+            }
+        });
+        userAnswers[questionIndex] = options[optionIndex].textContent.trim();
+    }
+
+    function submitQuiz() {
+        var score = 0;
+        var quizResultDiv = document.getElementById("quizResult");
+        questions.forEach(function(question, index) {
+            var correctAnswer = question.correct_answer;
+            var userAnswer = userAnswers[index];
+            if (userAnswer === correctAnswer) {
+                score += 1;
+            }
+        });
+        var totalQuestions = questions.length;
+        var percentage = (score / totalQuestions) * 100;
+        var resultMessage = "You scored " + score + " out of " + totalQuestions + ". Your score: " + percentage.toFixed(2) + "%";
+        quizResultDiv.textContent = resultMessage;
+        showModal(); // Show the modal with the quiz result
+    }
+
+    // Function to show the modal
+    function showModal() {
+        var modal = document.getElementById("quizResultModal");
+        modal.style.display = "block";
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        var modal = document.getElementById("quizResultModal");
+        modal.style.display = "none";
+    }
+
+    // Render questions
+    var quizQuestionsDiv = document.getElementById("quizQuestions");
+    questions.forEach(function(question, index) {
+        var questionDiv = document.createElement("div");
+        questionDiv.classList.add("question");
+        questionDiv.setAttribute("data-index", index);
+        questionDiv.innerHTML = "<h2>" + question.question + "</h2>";
+        question.options.forEach(function(option, optionIndex) {
+            var optionInput = document.createElement("input");
+            optionInput.setAttribute("type", "radio");
+            optionInput.setAttribute("name", "question_" + index);
+            optionInput.setAttribute("value", option);
+            optionInput.setAttribute("onchange", "selectOption(" + index + ", " + optionIndex + ")");
+            var optionLabel = document.createElement("label");
+            optionLabel.classList.add("option");
+            optionLabel.appendChild(optionInput);
+            optionLabel.appendChild(document.createTextNode(option));
+            questionDiv.appendChild(optionLabel);
+        });
+        quizQuestionsDiv.appendChild(questionDiv);
+    });
+
+
+    // Timer countdown script here...
+
+    var timerValue = {{ timer_value }}; // Get the timer value from Flask
+
+    function startTimer() {
+        var timerDisplay = document.getElementById("timerDisplay");
+
+        var intervalId = setInterval(function () {
+            var minutes = Math.floor(timerValue / 60);
+            var seconds = timerValue % 60;
+
+            // Format minutes and seconds with leading zeros if needed
+            var formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+            var formattedSeconds = seconds < 10 ? "0" + seconds : seconds;
+
+            // Update the timer display
+            timerDisplay.textContent = "Time Left: " + formattedMinutes + ":" + formattedSeconds;
+
+            // Decrement timer value
+            timerValue--;
+
+            // Check if timer has reached zero
+            if (timerValue < 0) {
+                clearInterval(intervalId);
+                timerDisplay.textContent = "Time's Up!";
+                submitQuiz(); // Automatically submit quiz when time's up
+            }
+        }, 1000); // Update every second
+    }
+
+    // Start the timer when the page is loaded
+    window.onload = function() {
+        startTimer();
+    };
+</script>
+</body>
+</html>
